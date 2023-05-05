@@ -4,10 +4,10 @@ import socket, struct
 
 
 class Robot:
-    def __init__(self, host = "192.168.7.24", port = 30002):
+    def __init__(self, host = "192.168.7.24"):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.s.connect((host, port))
+        self.s.connect((host, 30002))
         self.angle = None
         self.tcp_pos = None
     
@@ -57,7 +57,7 @@ class Robot:
                     i = msglen + i
         return self.angle, self.tcp_pos
     
-    def send_str(self,string):
+    def send_str(self,string): 
         if self.s is None:
             raise Exception("Error: socket not initialized")
         self.s.send(string.encode('utf8'))
@@ -69,3 +69,7 @@ class Robot:
     def set_vel_joint(self, j1,j2,j3,j4,j5,j6, a = 1.0):
         self.send_str("speedj([{}, {}, {}, {}, {}, {}], a={})\n".format(j1,j2,j3,j4,j5,j6, a))
     
+    def move_to_tcp_pose(self, x,y,z,angle1,angle2,angle3, a = 1.0):
+        self.send_str("movel([{}, {}, {}, {}, {}, {}], a={})\n".format(x,y,z,angle1,angle2,angle3, a))
+    def move_to_joints(self, j1,j2,j3,j4,j5,j6, a = 1.0):
+        self.send_str("movej([{}, {}, {}, {}, {}, {}], a={})\n".format(j1,j2,j3,j4,j5,j6, a))

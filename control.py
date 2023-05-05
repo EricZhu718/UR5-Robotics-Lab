@@ -1,7 +1,7 @@
 import socket
 import struct
 import pygame
-
+from time import sleep
 
 
 angle = []
@@ -78,6 +78,7 @@ def get_data(s):
 
 if __name__ == '__main__':
     HOST = "192.168.7.24"
+    HOST = '169.254.129.1'
     PORT = 30002
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -95,6 +96,9 @@ if __name__ == '__main__':
         if len(angle) == 6:
             joint_str = '{:01.2f}, {:01.2f}, {:01.2f}, {:01.2f}, {:01.2f}, {:01.2f}'.format(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5] )
             print(joint_str)
+            pos_str = '{:01.2f}, {:01.2f}, {:01.2f}, {:01.2f}, {:01.2f}, {:01.2f}'.format(*tcp_pos)
+            print(pos_str)
+            print('------')
         # print([round(elm, 3) for elm in tcp_pos])
         # print()
 
@@ -108,17 +112,33 @@ if __name__ == '__main__':
 
         speed = 2
         joint_vels = [0] * 6
+        target_pos = [elm for elm in tcp_pos]
         if pygame.K_a in keys_pressed:
-            joint_vels[2] += speed 
+            joint_vels[1] += speed 
         elif pygame.K_d in keys_pressed:
-            joint_vels[2] -= speed
+            joint_vels[1] -= speed
 
         elif pygame.K_w in keys_pressed:
             joint_vels[0] += speed 
         elif pygame.K_s in keys_pressed:
             joint_vels[0] -= speed
 
-        send_str = "speedj([{}, {}, {}, {}, {}, {}], a=1.0)\n".format(*joint_vels)
-        # print(send_str)
 
-        s.send(send_str.encode('utf8'))
+        elif pygame.K_e in keys_pressed:
+            joint_vels[2] += speed 
+        elif pygame.K_q in keys_pressed:
+            joint_vels[2] -= speed
+
+        elif pygame.K_1 in keys_pressed:
+            target_pos[1] = tcp_pos[0] - 1
+            print('Hi')
+
+
+        send_str = "speedl([{}, {}, {}, {}, {}, {}], a=1.0)\n".format(*joint_vels)
+        print(send_str)
+        # if len(target_pos) == 6:
+        #     send_str = "movel([{}, {}, {}, {}, {}, {}], a={})\n".format(*target_pos, 1.0)
+        #     print(send_str)
+
+        #     # s.send(send_str.encode('utf8'))
+        #     sleep(5)
