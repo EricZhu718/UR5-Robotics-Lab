@@ -79,7 +79,8 @@ if __name__ == '__main__':
         # Display the resulting frame
         cv2.imshow('frame', frame)
         drawn = plot_bboxes(frame, results[0].boxes.boxes, score=False)
-        cv2.imshow('drawn', drawn)
+        if drawn is not None:
+          cv2.imshow('drawn', drawn)
 
 
         # the 'q' button is set as the
