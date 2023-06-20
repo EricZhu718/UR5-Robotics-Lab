@@ -22,7 +22,7 @@ In generally, I wouldn't stress too much about getting injured by the arm. The a
 ### 4. Protective Stops
 - If the robot crashes into itself during training, the robot immediately stops moving, and any command sent by the desktop will not run. You need to go to the tablet and physically reactivate the robot before any other computer commands can be run again.
 - There is a way to automatically disable the protective stops through ending an utf8-encoded message through port 29999, but it didn't work when I tried it. I also don't think it's a good idea honestly because automatically disabling protective stops may lead to more crashes and hurt the hardware.
-- The software can tell when there's a protective stop by accessing the field ``protective_stop `` in the robot class. What I typically do when I'm training something and there's a protective stop is that I give a large negative reward and then end the episode. I keep the code running, disable the protective stop on from the tablet, and then start a new episode.
+- The software can tell when there's a protective stop by accessing the field ``protective_stop`` in the robot class. What I typically do when I'm training something and there's a protective stop is that I give a large negative reward and then end the episode. I keep the code running, disable the protective stop on from the tablet, and then start a new episode.
 
 ### 5. Terminology
 - ee_pos refers to end-effector position aka the position at the end of the arm
@@ -32,6 +32,7 @@ In generally, I wouldn't stress too much about getting injured by the arm. The a
 - There's an inverse kinematics solver built into the robot that is both faster and accurate. To call it, simply say ``self.robot.movel``
 - Alteratively, pybullet has a built-in inverse kinematics solver as well
 - Mara and I trained an RL for reach task at one point, but the coordinates didn't line up perfectly when we translated the arm from simulation to the real world. If you want to play with it, the simulation code for the pybullet reach task is ``Ur5RLTrainingFromDesktop/UrTrainingEnvSimulation.py``. I believe my simulation code for the clamp task was lost when my laptop died.
+- Additionally, there is a trained version of the reach task in ``Ur5RLTrainingFromDesktop/rl_model_2000000_steps.zip``. Again, this will not work perfectly in the real life robot because the coordinate systems are slightly off.
 
 ### 7. Gripper
 - I never figured out how to open and close the gripper. I think the reason is that the gripper is it's own seperate device.
@@ -41,7 +42,7 @@ In generally, I wouldn't stress too much about getting injured by the arm. The a
 - The physical robot uses euler angles but pybullet uses quaterions. I used scipy to toggle between the two.
 
 ### 9. Other commands
-- There are many other commands the robot can receive that I did not code up. This is mainly cause the ones given are the only ones you should need.
+- There are many other commands the robot can receive that I did not code up. This is mainly cause the ones given in robot class are the only ones you should need.
 - If you search up URScript, you will see the others
 - To send a custom command, call ``robot.send_str("your command here")``
 
@@ -50,14 +51,19 @@ In generally, I wouldn't stress too much about getting injured by the arm. The a
 -  When operating remotely, make sure on the tablet that the robot is set to remote on the top right when handling in remote
 -  Sometimes the robot just times out so turn the thing on and off if it seems to stop responding
 -  The table actually moves because it's on wheels. I put reference tape on the ground to help with making sure the table is always in the same position
--  Make sure the coordinate system in the robot is the same as the coordinate system is the simulation
+-  Make sure the coordinate system in the robot is the same as the coordinate system in the simulation
+-  
 
 ### Miscellaneous Things:
 - Joint angles ranges can be increased in the tablet
-- Information is sent and received through a header format given by the 
+- Information is sent and received through a header format given by ``ClientInterfaces_Primary.pdf`` (kinda like TCP protocol but slightly different)
+- Note that the specific verison of the UR5 we're using is the UR5e, which has slightly different protocols than the the original UR5
 - Port 30001 was used because it included all the information needed
 - Port 30002 should not be used because the extra information sent to the computer is enough to crash the parser
-- 
+- Parser (UrSecmon) was taken from the UrX library, but was created for a different version of the robot, which is why I tend to surround each call in try catch statements
+- GoPro code is in testgopro.py
+- QR code reader library that I used was opencv's and allowed for detecting QR codes that were not perfectly flat with the camera
+- URDF files for the robot can be found in ``Ur5RLTraining/urdf``
 
 
 https://user-images.githubusercontent.com/49328304/213344607-bc15cc64-4d20-4ee0-96bc-67a44516a979.mp4
