@@ -31,7 +31,8 @@ In generally, I wouldn't stress too much about getting injured by the arm. The a
 ### 6. Inverse Kinematics Solver
 - There's an inverse kinematics solver built into the robot that is both faster and accurate. To call it, simply say ``self.robot.movel``
 - Alteratively, pybullet has a built-in inverse kinematics solver as well
-- Mara and I trained an 
+- Mara and I trained an RL for reach task at one point, but the coordinates didn't line up perfectly when we translated the arm from simulation to the real world
+- 
 
 
 ### Tips / Tricks
