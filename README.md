@@ -31,14 +31,33 @@ In generally, I wouldn't stress too much about getting injured by the arm. The a
 ### 6. Inverse Kinematics Solver
 - There's an inverse kinematics solver built into the robot that is both faster and accurate. To call it, simply say ``self.robot.movel``
 - Alteratively, pybullet has a built-in inverse kinematics solver as well
-- Mara and I trained an RL for reach task at one point, but the coordinates didn't line up perfectly when we translated the arm from simulation to the real world
-- 
+- Mara and I trained an RL for reach task at one point, but the coordinates didn't line up perfectly when we translated the arm from simulation to the real world. If you want to play with it, the simulation code for the pybullet reach task is ``Ur5RLTrainingFromDesktop/UrTrainingEnvSimulation.py``. I believe my simulation code for the clamp task was lost when my laptop died.
 
+### 7. Gripper
+- I never figured out how to open and close the gripper. I think the reason is that the gripper is it's own seperate device.
 
-### Tips / Tricks
+### 8. Pybullet
+- I know Mara uses Mujoco. I used Pybullet because you're able to set the velocity of the joints whereas I don't think you can in Mujoco, although I didn't look very hard
+- The physical robot uses euler angles but pybullet uses quaterions. I used scipy to toggle between the two.
+
+### 9. Other commands
+- There are many other commands the robot can receive that I did not code up. This is mainly cause the ones given are the only ones you should need.
+- If you search up URScript, you will see the others
+- To send a custom command, call ``robot.send_str("your command here")``
+
+### 10. General pitfalls
+- When training in pybullet simulation, make sure the replay buffer is large enough. I found out that the replay buffer was not large enough and started deleting earlier episodes. (This was also because I never capped my max steps in my episodes)
+-  When operating remotely, make sure on the tablet that the robot is set to remote on the top right when handling in remote
+-  Sometimes the robot just times out so turn the thing on and off if it seems to stop responding
+-  The table actually moves because it's on wheels. I put reference tape on the ground to help with making sure the table is always in the same position
+-  Make sure the coordinate system in the robot is the same as the coordinate system is the simulation
 
 ### Miscellaneous Things:
 - Joint angles ranges can be increased in the tablet
+- Information is sent and received through a header format given by the 
+- Port 30001 was used because it included all the information needed
+- Port 30002 should not be used because the extra information sent to the computer is enough to crash the parser
+- 
 
 
 https://user-images.githubusercontent.com/49328304/213344607-bc15cc64-4d20-4ee0-96bc-67a44516a979.mp4
